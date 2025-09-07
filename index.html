@@ -1,0 +1,540 @@
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生態活動推廣平台</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 我的活動表格樣式 */
+        .my-activities-section table,
+        .announcement-management-section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .my-activities-section th,
+        .my-activities-section td,
+        .announcement-management-section th,
+        .announcement-management-section td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .my-activities-section th,
+        .announcement-management-section th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .my-activities-section tr:nth-child(even ),
+        .announcement-management-section tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .my-activities-section tr:hover,
+        .announcement-management-section tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="index.html" class="header-link"><img src="logo.png" alt="Logo" class="logo">生態活動推廣平台</a></h1>
+        <nav>
+            <a href="#events">近期活動</a>
+            <a href="#about">關於我們</a>
+            <a href="#my-activities">我的活動</a>
+            <a href="#announcement-management" id="announcement-management-link">公告管理</a>
+        </nav>
+        <div class="nav-user">
+            <div class="user-actions">
+                <a href="#" id="login-btn">登入</a>
+                <a href="#" id="signup-btn" class="cta-button-header">註冊</a>
+            </div>
+            <div class="user-profile" style="display: none;">
+                <a href="my-registrations.html" id="my-registrations-link" style="display: none;">我報名的活動</a>
+                <a href="event-dashboard.html" id="dashboard-link" style="display: none;">活動儀表板</a>
+                <a href="my-events.html" id="my-events-link" style="display: none;">我的活動</a>
+                <a href="profile.html" id="profile-link" style="display: none;">修改個人資料</a>
+                <a href="#" id="logout-btn">登出</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <h2>加入我們，守護地球</h2>
+                <p>探索並參與各種有趣的生態保護活動，為我們的環境盡一份心力。</p>
+                <a href="#events" class="cta-button">查看活動</a>
+            </div>
+        </section>
+
+        <section id="events" class="events-section">
+            <h2>近期活動</h2>
+            <div class="event-management" id="event-management-controls" style="display: none;">
+                <button id="add-event-btn" class="cta-button">建立我的活動</button>
+            </div>
+            <div id="event-list" class="event-list">
+                <!-- Event cards will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <section id="about" class="about-section">
+            <h2>關於我們</h2>
+            <p>我們是一個致力於推廣環境保護意識的非營利組織。透過舉辦各式各樣的生態活動，我們希望能連結更多關心地球的朋友，一同採取行動，創造一個更永續的未來。</p>
+        </section>
+
+        <section id="bulletin-board" class="bulletin-board-section">
+            <h2>最新公告</h2>
+            <div id="announcement-list">
+                <!-- Announcements will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <section id="my-activities" class="my-activities-section">
+            <h2>我的活動</h2>
+            <div class="activity-controls">
+                <button id="registered-activities-btn" class="cta-button">已報名的活動</button>
+                <button id="created-activities-btn" class="cta-button">我建立的活動</button>
+            </div>
+            <div id="registered-activities-list" class="activity-list">
+                <h3>已報名的活動列表</h3>
+                <p>這裡將顯示您已報名的活動。</p>
+                <!-- Registered activities will be loaded here -->
+            </div>
+            <div id="created-activities-list" class="activity-list" style="display: none;">
+                <h3>我建立的活動列表</h3>
+                <p>這裡將顯示您建立的活動。</p>
+                <!-- Created activities will be loaded here -->
+            </div>
+        </section>
+
+        <section id="announcement-management" class="announcement-management-section" style="display: none;">
+            <h2>公告管理</h2>
+            <div id="announcement-table-container">
+                <!-- Announcements table will be inserted here by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <p>&copy; 2024 生態活動推廣平台. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Event Form Modal -->
+    <div id="event-form-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h2 id="event-form-title">新增活動</h2>
+            <form id="event-form">
+                <input type="hidden" id="event-id">
+                <label for="event-title">活動名稱</label>
+                <input type="text" id="event-title" placeholder="活動名稱" required>
+                <label for="event-location">活動地點</label>
+                <input type="text" id="event-location" placeholder="活動地點" required>
+                <label for="event-description">活動描述</label>
+                <textarea id="event-description" placeholder="活動描述" rows="4" required></textarea>
+                <label for="event-category">活動類別</label>
+                <select id="event-category" required>
+                    <option value="" disabled selected>選擇一個類別</option>
+                    <option value="mountain">爬山</option>
+                    <option value="sea">海釣</option>
+                    <option value="ecology">觀賞生態</option>
+                    <option value="other">其它</option>
+                </select>
+                <button type="submit">儲存活動</button>
+                <p class="form-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Registration Form Modal -->
+    <div id="registration-form-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h2 id="registration-form-title">活動報名</h2>
+            <form id="registration-form">
+                <input type="hidden" id="registration-event-id">
+                <h3 id="registration-event-title" style="margin-top:0; color: var(--primary-color);"></h3>
+                <label for="registration-member-id">會員編號</label>
+                <input type="text" id="registration-member-id" placeholder="輸入報名者的會員編號" required>
+                <label for="registration-diet">飲食習慣</label>
+                <textarea id="registration-diet" placeholder="例如：素食、無麩質等" rows="3"></textarea>
+                <button type="submit">確認報名</button>
+                <p class="form-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h2>註冊新帳號</h2>
+            <form id="signup-form">
+                <input type="text" id="signup-name" placeholder="姓名" required>
+                <input type="text" id="signup-account" placeholder="帳號" required>
+                <input type="email" id="signup-email" placeholder="電子郵件" required>
+                <input type="password" id="signup-password" placeholder="密碼" required>
+                <input type="tel" id="signup-phone" placeholder="手機號碼" required>
+                <input type="text" id="signup-address" placeholder="地址" required>
+                <label for="signup-birthdate">生日:</label>
+                <input type="date" id="signup-birthdate" required>
+                <div class="gender-selection">
+                    <label>性別:</label>
+                    <input type="radio" id="gender-male" name="gender" value="male" required>
+                    <label for="gender-male">男</label>
+                    <input type="radio" id="gender-female" name="gender" value="female">
+                    <label for="gender-female">女</label>
+                    <input type="radio" id="gender-other" name="gender" value="other">
+                    <label for="gender-other">其他</label>
+                </div>
+                <button type="submit">註冊</button>
+                <p class="form-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close-btn">&times;</span>
+            <h2>會員登入</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="電子郵件" required>
+                <input type="password" id="login-password" placeholder="密碼" required>
+                <button type="submit">登入</button>
+                <p class="form-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Feedback Display Modal -->
+    <div id="feedback-display-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; text-align: left;">
+            <span class="modal-close-btn">&times;</span>
+            <h2 id="feedback-display-title">活動回饋</h2>
+            <div id="feedback-list-content"></div>
+        </div>
+    </div>
+
+    <script type="importmap">
+    </script>
+    <!-- 將您的 JavaScript 程式碼放在這裡，或確保 main.js 包含所有相關邏輯 -->
+    <script>
+        // 定義 API 基礎網址
+        const API_URL = 'http://localhost:5000/api'; // 請根據您的後端設定修改
+
+        // 取得 DOM 元素
+        const signupForm = document.getElementById('signup-form' );
+        const loginForm = document.getElementById('login-form');
+        const signupModal = document.getElementById('signup-modal');
+        const loginModal = document.getElementById('login-modal');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userProfile = document.querySelector('.user-profile');
+        const userActions = document.querySelector('.user-actions');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const announcementManagementLink = document.getElementById('announcement-management-link');
+        const announcementManagementSection = document.getElementById('announcement-management');
+
+        // 顯示/關閉 modal
+        function toggleModal(modal, show) {
+            modal.style.display = show ? 'flex' : 'none';
+        }
+
+        // 註冊事件
+        signupForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const userData = {
+    name: document.getElementById('signup-name').value,
+    email: document.getElementById('signup-email').value,
+    password: document.getElementById('signup-password').value
+  };
+
+  try {
+    const res = await fetch(`${API_URL}/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData)
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      alert('註冊成功！');
+    } else {
+      alert(result.message || '註冊失敗');
+    }
+  } catch (err) {
+    alert('發生錯誤，請稍後再試');
+  }
+});
+        // 登入事件
+        loginForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const loginData = {
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+            };
+
+            try {
+                // 模擬成功登入回應
+                const res = { 
+                    ok: true, 
+                    json: () => Promise.resolve({
+                        token: 'mock_token_123',
+                        user: { email: loginData.email, role: 'user' } // 模擬使用者資訊
+                    })
+                };
+                const result = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    updateUIOnLogin(result.user);
+                    toggleModal(loginModal, false);
+                    loginForm.reset();
+                } else {
+                    alert(result.message || '登入失敗');
+                }
+            } catch (err) {
+                alert('發生錯誤，請稍後再試');
+                console.error(err);
+            }
+        });
+
+        // 登出事件
+        logoutBtn?.addEventListener('click', () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            userProfile.style.display = 'none';
+            userActions.style.display = 'flex';
+        });
+
+        // 點擊登入註冊按鈕開啟 modal
+        loginBtn?.addEventListener('click', () => toggleModal(loginModal, true));
+        signupBtn?.addEventListener('click', () => toggleModal(signupModal, true));
+
+        // 關閉 modal 事件
+        document.querySelectorAll('.modal-close-btn')?.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.closest('.modal-overlay').style.display = 'none';
+            });
+        });
+
+        // UI 更新
+        function updateUIOnLogin(user) {
+            userActions.style.display = 'none';
+            userProfile.style.display = 'flex';
+
+            if (user.role === 'admin') {
+                // document.getElementById('bulletin-board-link').style.display = 'inline'; // 暫時註銷，因為現在有專門的公告管理區塊
+            }
+        }
+
+        // 自動登入狀態檢查
+        window.addEventListener("DOMContentLoaded", () => {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (user) {
+                updateUIOnLogin(user);
+            }
+        });
+
+        // 我的活動 - 取得 DOM 元素
+        const registeredActivitiesBtn = document.getElementById("registered-activities-btn");
+        const createdActivitiesBtn = document.getElementById("created-activities-btn");
+        const registeredActivitiesList = document.getElementById("registered-activities-list");
+        const createdActivitiesList = document.getElementById("created-activities-list");
+
+        // 模擬資料
+        const mockRegisteredActivities = [
+            {
+                listingId: "A001",
+                activityId: "ACT001",
+                listingDate: "2025/03/01",
+                status: "已報名",
+                period: "2025/03/15 - 2025/03/15",
+                registrationStartDate: "2025/02/01",
+                registrationEndDate: "2025/03/10",
+                registrationLimit: 50,
+                remarks: "請準時集合"
+            },
+            {
+                listingId: "A002",
+                activityId: "ACT002",
+                listingDate: "2025/04/01",
+                status: "已報名",
+                period: "2025/04/20 - 2025/04/20",
+                registrationStartDate: "2025/03/01",
+                registrationEndDate: "2025/04/15",
+                registrationLimit: 30,
+                remarks: "自備飲水"
+            }
+        ];
+
+        const mockCreatedActivities = [
+            {
+                listingId: "B001",
+                activityId: "ACT003",
+                listingDate: "2025/04/25",
+                status: "進行中",
+                period: "2025/05/10 - 2025/05/10",
+                registrationStartDate: "2025/04/01",
+                registrationEndDate: "2025/05/05",
+                registrationLimit: 100,
+                remarks: "需自備工具"
+            },
+            {
+                listingId: "B002",
+                activityId: "ACT004",
+                listingDate: "2025/05/20",
+                status: "未開始",
+                period: "2025/06/01 - 2025/06/01",
+                registrationStartDate: "2025/05/01",
+                registrationEndDate: "2025/05/28",
+                registrationLimit: 20,
+                remarks: "需搭乘接駁車"
+            }
+        ];
+
+        // 渲染活動列表的函數
+        function renderActivities(container, activities) {
+            let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>活動上架編號</th>
+                            <th>活動編號</th>
+                            <th>上架日期</th>
+                            <th>活動狀態</th>
+                            <th>活動期間</th>
+                            <th>報名起始日期</th>
+                            <th>報名結束日期</th>
+                            <th>報名人數上限</th>
+                            <th>備註</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            if (activities.length === 0) {
+                tableHtml += `<tr><td colspan="9">無活動資料</td></tr>`;
+            } else {
+                activities.forEach(activity => {
+                    tableHtml += `
+                        <tr>
+                            <td>${activity.listingId}</td>
+                            <td>${activity.activityId}</td>
+                            <td>${activity.listingDate}</td>
+                            <td>${activity.status}</td>
+                            <td>${activity.period}</td>
+                            <td>${activity.registrationStartDate}</td>
+                            <td>${activity.registrationEndDate}</td>
+                            <td>${activity.registrationLimit}</td>
+                            <td>${activity.remarks}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = `<h3>${container.querySelector('h3').textContent}</h3>` + tableHtml;
+        }
+
+        // 我的活動按鈕事件監聽
+        registeredActivitiesBtn?.addEventListener('click', () => {
+            registeredActivitiesList.style.display = 'block';
+            createdActivitiesList.style.display = 'none';
+            renderActivities(registeredActivitiesList, mockRegisteredActivities);
+        });
+
+        createdActivitiesBtn?.addEventListener('click', () => {
+            registeredActivitiesList.style.display = 'none';
+            createdActivitiesList.style.display = 'block';
+            renderActivities(createdActivitiesList, mockCreatedActivities);
+        });
+
+        // 預設顯示已報名的活動
+        window.addEventListener('DOMContentLoaded', () => {
+            renderActivities(registeredActivitiesList, mockRegisteredActivities);
+        });
+
+        // 公告管理相關
+        const announcementTableContainer = document.getElementById('announcement-table-container');
+
+        // 模擬公告資料
+        const mockAnnouncements = [
+            {
+                announcementId: 'AN001',
+                announcementName: '平台維護通知',
+                announcementDate: '2025/07/20'
+            },
+            {
+                announcementId: 'AN002',
+                announcementName: '新功能上線預告',
+                announcementDate: '2025/07/25'
+            }
+        ];
+
+        // 渲染公告列表的函數
+        function renderAnnouncements(container, announcements) {
+            let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>公告編號</th>
+                            <th>公告名稱</th>
+                            <th>公告日期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            if (announcements.length === 0) {
+                tableHtml += `<tr><td colspan="3">無公告資料</td></tr>`;
+            } else {
+                announcements.forEach(announcement => {
+                    tableHtml += `
+                        <tr>
+                            <td>${announcement.announcementId}</td>
+                            <td>${announcement.announcementName}</td>
+                            <td>${announcement.announcementDate}</td>
+                        </tr>
+                    `;
+                });
+            }
+
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+            container.innerHTML = tableHtml;
+        }
+
+        // 公告管理按鈕事件監聽
+        announcementManagementLink?.addEventListener('click', (e) => {
+            e.preventDefault(); // 阻止預設的錨點跳轉行為
+            // 隱藏其他主要區塊，顯示公告管理區塊
+            document.querySelectorAll('main > section').forEach(section => {
+                section.style.display = 'none';
+            });
+            announcementManagementSection.style.display = 'block';
+            renderAnnouncements(announcementTableContainer, mockAnnouncements);
+        });
+
+    </script>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/member-auth.js"></script>
+</body>
+</html>
